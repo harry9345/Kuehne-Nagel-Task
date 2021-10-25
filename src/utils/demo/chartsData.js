@@ -1,33 +1,30 @@
 export const doughnutLegends = [
-  { title: 'Shirts', color: 'bg-blue-500' },
-  { title: 'Shoes', color: 'bg-teal-600' },
-  { title: 'Bags', color: 'bg-purple-600' },
-]
+  { title: "Deliverd", color: "bg-blue-500" },
+  { title: "Shipped", color: "bg-teal-600" },
+  { title: "In Transit", color: "bg-purple-600" },
+];
 
 export const lineLegends = [
-  { title: 'Organic', color: 'bg-teal-600' },
-  { title: 'Paid', color: 'bg-purple-600' },
-]
+  { title: "In Transit", color: "bg-teal-600" },
+  { title: "Shipped", color: "bg-purple-600" },
+];
 
 export const barLegends = [
-  { title: 'Shoes', color: 'bg-teal-600' },
-  { title: 'Bags', color: 'bg-purple-600' },
-]
+  { title: "Shipped", color: "bg-teal-600" },
+  { title: "In Transit", color: "bg-purple-600" },
+];
 
 export const doughnutOptions = {
   data: {
     datasets: [
       {
         data: [33, 33, 33],
-        /**
-         * These colors come from Tailwind CSS palette
-         * https://tailwindcss.com/docs/customizing-colors/#default-color-palette
-         */
-        backgroundColor: ['#0694a2', '#1c64f2', '#7e3af2'],
-        label: 'Dataset 1',
+
+        backgroundColor: ["#0694a2", "#1c64f2", "#7e3af2"],
+        label: "Dataset 1",
       },
     ],
-    labels: ['Shoes', 'Shirts', 'Bags'],
+    labels: ["Deliverd", "Shipped", "In Transit"],
   },
   options: {
     responsive: true,
@@ -36,32 +33,24 @@ export const doughnutOptions = {
   legend: {
     display: false,
   },
-}
+};
 
 export const lineOptions = {
   data: {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [
       {
-        label: 'Organic',
-        /**
-         * These colors come from Tailwind CSS palette
-         * https://tailwindcss.com/docs/customizing-colors/#default-color-palette
-         */
-        backgroundColor: '#0694a2',
-        borderColor: '#0694a2',
+        label: "In Transit",
+        backgroundColor: "#0694a2",
+        borderColor: "#0694a2",
         data: [43, 48, 40, 54, 67, 73, 70],
         fill: false,
       },
       {
-        label: 'Paid',
+        label: "Deliverd",
         fill: false,
-        /**
-         * These colors come from Tailwind CSS palette
-         * https://tailwindcss.com/docs/customizing-colors/#default-color-palette
-         */
-        backgroundColor: '#7e3af2',
-        borderColor: '#7e3af2',
+        backgroundColor: "#7e3af2",
+        borderColor: "#7e3af2",
         data: [24, 50, 64, 74, 52, 51, 65],
       },
     ],
@@ -69,11 +58,11 @@ export const lineOptions = {
   options: {
     responsive: true,
     tooltips: {
-      mode: 'index',
+      mode: "index",
       intersect: false,
     },
     hover: {
-      mode: 'nearest',
+      mode: "nearest",
       intersect: true,
     },
     scales: {
@@ -81,14 +70,14 @@ export const lineOptions = {
         display: true,
         scaleLabel: {
           display: true,
-          labelString: 'Month',
+          labelString: "Month",
         },
       },
       y: {
         display: true,
         scaleLabel: {
           display: true,
-          labelString: 'Value',
+          labelString: "Value",
         },
       },
     },
@@ -96,23 +85,21 @@ export const lineOptions = {
   legend: {
     display: false,
   },
-}
+};
 
 export const barOptions = {
   data: {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [
       {
-        label: 'Shoes',
-        backgroundColor: '#0694a2',
-        // borderColor: window.chartColors.red,
+        label: "Deliverd",
+        backgroundColor: "#0694a2",
         borderWidth: 1,
         data: [-3, 14, 52, 74, 33, 90, 70],
       },
       {
-        label: 'Bags',
-        backgroundColor: '#7e3af2',
-        // borderColor: window.chartColors.blue,
+        label: "Shipped",
+        backgroundColor: "#7e3af2",
         borderWidth: 1,
         data: [66, 33, 43, 12, 54, 62, 84],
       },
@@ -124,4 +111,4 @@ export const barOptions = {
   legend: {
     display: false,
   },
-}
+};

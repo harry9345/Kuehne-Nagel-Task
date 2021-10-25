@@ -1,14 +1,24 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 
-import CTA from '../components/CTA'
-import InfoCard from '../components/Cards/InfoCard'
-import ChartCard from '../components/Chart/ChartCard'
-import { Doughnut, Line } from 'react-chartjs-2'
-import ChartLegend from '../components/Chart/ChartLegend'
-import PageTitle from '../components/Typography/PageTitle'
-import { ChatIcon, CartIcon, MoneyIcon, PeopleIcon } from '../icons'
-import RoundIcon from '../components/RoundIcon'
-import response from '../utils/demo/tableData'
+import InfoCard from "../components/Cards/InfoCard";
+import ChartCard from "../components/Chart/ChartCard";
+import { Doughnut, Line } from "react-chartjs-2";
+import ChartLegend from "../components/Chart/ChartLegend";
+import PageTitle from "../components/Typography/PageTitle";
+
+import { Link } from "react-router-dom";
+import {
+  ChatIcon,
+  CartIcon,
+  MoneyIcon,
+  PeopleIcon,
+  EditIcon,
+  TrashIcon,
+} from "../icons";
+import RoundIcon from "../components/RoundIcon";
+
+import axios from "axios";
+
 import {
   TableBody,
   TableContainer,
@@ -16,78 +26,76 @@ import {
   TableHeader,
   TableCell,
   TableRow,
-  TableFooter,
-  Avatar,
   Badge,
-  Pagination,
-} from '@windmill/react-ui'
+  Button,
+} from "@windmill/react-ui";
 
 import {
   doughnutOptions,
   lineOptions,
   doughnutLegends,
   lineLegends,
-} from '../utils/demo/chartsData'
+} from "../utils/demo/chartsData";
 
 function Dashboard() {
-  const [page, setPage] = useState(1)
-  const [data, setData] = useState([])
+  const [response, setResponse] = useState([]);
 
-  // pagination setup
-  const resultsPerPage = 10
-  const totalResults = response.length
-
-  // pagination change control
-  function onPageChange(p) {
-    setPage(p)
-  }
-
-  // on page change, load new sliced data
-  // here you would make another server request for new data
+  const getData = () => {
+    axios.get("http://localhost:3003/shipments").then((res) => {
+      setResponse(res.data);
+    });
+  };
   useEffect(() => {
-    setData(response.slice((page - 1) * resultsPerPage, page * resultsPerPage))
-  }, [page])
+    getData();
+  }, []);
+
+  const setData = (data) => {
+    localStorage.setItem("data", JSON.stringify(data));
+  };
+
+  const onDelete = (orderNo) => {
+    axios.delete(`http://localhost:3003/shipments/${orderNo}`).then(() => {
+      getData();
+    });
+  };
 
   return (
     <>
       <PageTitle>Dashboard</PageTitle>
 
-      <CTA />
-
-      {/* <!-- Cards --> */}
       <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
-        <InfoCard title="Total clients" value="6389">
+        <InfoCard title="Total Shipments" value={response.length}>
           <RoundIcon
-            icon={PeopleIcon}
+            icon={CartIcon}
             iconColorClass="text-orange-500 dark:text-orange-100"
             bgColorClass="bg-orange-100 dark:bg-orange-500"
             className="mr-4"
           />
         </InfoCard>
 
-        <InfoCard title="Account balance" value="$ 46,760.89">
+        <InfoCard title="Delivered " value="6,760">
           <RoundIcon
             icon={MoneyIcon}
             iconColorClass="text-green-500 dark:text-green-100"
-            bgColorClass="bg-green-100 dark:bg-green-500"
+            bgColorClass="bg-green-700 dark:bg-green-700"
             className="mr-4"
           />
         </InfoCard>
 
-        <InfoCard title="New sales" value="376">
+        <InfoCard title="In Transit " value="376">
           <RoundIcon
-            icon={CartIcon}
+            icon={PeopleIcon}
             iconColorClass="text-blue-500 dark:text-blue-100"
-            bgColorClass="bg-blue-100 dark:bg-blue-500"
+            bgColorClass="bg-orange-600  dark:bg-orange-600 "
             className="mr-4"
           />
         </InfoCard>
 
-        <InfoCard title="Pending contacts" value="35">
+        <InfoCard title="Shipped" value="35">
           <RoundIcon
             icon={ChatIcon}
             iconColorClass="text-teal-500 dark:text-teal-100"
-            bgColorClass="bg-teal-100 dark:bg-teal-500"
+            bgColorClass="bg-purple-600 dark:bg-purple-600"
             className="mr-4"
           />
         </InfoCard>
@@ -97,45 +105,71 @@ function Dashboard() {
         <Table>
           <TableHeader>
             <tr>
-              <TableCell>Client</TableCell>
-              <TableCell>Amount</TableCell>
+              <TableCell>Customer</TableCell>
+              <TableCell>Consignee</TableCell>
               <TableCell>Status</TableCell>
+              <TableCell>Tracking No</TableCell>
               <TableCell>Date</TableCell>
+              <TableCell>Actions</TableCell>
             </tr>
           </TableHeader>
           <TableBody>
-            {data.map((user, i) => (
-              <TableRow key={i}>
+            {response.map((shipment) => (
+              <TableRow key={shipment.orderNo}>
                 <TableCell>
                   <div className="flex items-center text-sm">
-                    <Avatar className="hidden mr-3 md:block" src={user.avatar} alt="User image" />
-                    <div>
-                      <p className="font-semibold">{user.name}</p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{user.job}</p>
-                    </div>
+                    <p className="font-semibold">{shipment.customer}</p>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm">$ {user.amount}</span>
+                  <span className="text-sm"> {shipment.consignee}</span>
                 </TableCell>
                 <TableCell>
-                  <Badge type={user.status}>{user.status}</Badge>
+                  <Badge
+                    type={
+                      shipment.status === "Delivered"
+                        ? "success"
+                        : shipment.status === "Shipped"
+                        ? "primary"
+                        : "warning"
+                    }
+                  >
+                    {shipment.status}
+                  </Badge>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
+                  <span className="text-sm"> {shipment.trackingNo}</span>
+                </TableCell>
+
+                <TableCell>
+                  <span className="text-sm">{shipment.date}</span>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center space-x-4">
+                    <Link to="/app/update">
+                      <Button
+                        layout="link"
+                        size="icon"
+                        aria-label="Edit"
+                        onClick={() => setData(shipment)}
+                      >
+                        <EditIcon className="w-5 h-5" aria-hidden="true" />
+                      </Button>
+                    </Link>
+                    <Button
+                      layout="link"
+                      size="icon"
+                      aria-label="Delete"
+                      onClick={() => onDelete(shipment.orderNo)}
+                    >
+                      <TrashIcon className="w-5 h-5" aria-hidden="true" />
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-        <TableFooter>
-          <Pagination
-            totalResults={totalResults}
-            resultsPerPage={resultsPerPage}
-            label="Table navigation"
-            onChange={onPageChange}
-          />
-        </TableFooter>
       </TableContainer>
 
       <PageTitle>Charts</PageTitle>
@@ -151,7 +185,7 @@ function Dashboard() {
         </ChartCard>
       </div>
     </>
-  )
+  );
 }
 
-export default Dashboard
+export default Dashboard;
